@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from .models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth.models import update_last_login
+from django.utils import timezone
+from .models import UserActivity
 from django.contrib.auth.password_validation import validate_password
 
 
@@ -23,7 +26,9 @@ class UserSigninSerializer(serializers.ModelSerializer):
 class UserSignupSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ("email", "first_name", "password",)
+		fields = ("email",
+		          "first_name",
+		          "password",)
 		extra_kwargs = {"password": {"write_only": True}}
 
 	def create(self, validated_data):
@@ -37,6 +42,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+
 	def validate(self, attrs):
 		data = super().validate(attrs)
 
@@ -50,3 +56,20 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 			}
 		)
 		return data
+
+	@classmethod
+	def get_token(cls, user):
+		token = super().get_token(user)
+
+		# Update user's last login time
+		update_last_login(None, user)
+
+		return token
+
+
+class UserActivitySerializer(serializers.ModelSerializer):
+	class Meta:
+		model = UserActivity
+		fields = ("last_login",
+		          "last_request_time",)
+
