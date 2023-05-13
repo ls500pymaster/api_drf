@@ -18,6 +18,7 @@ class LikeUnlikePostView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         post = self.get_object()
         user = request.user
+        print(user)
 
         if user in post.liked_by.all():
             post.liked_by.remove(user)

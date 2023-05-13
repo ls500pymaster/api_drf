@@ -38,7 +38,7 @@ class LoginView(TokenObtainPairView):
 
 
 class LastLoginView(generics.GenericAPIView):
-	permission_classes = (IsAuthenticated,)
+	# permission_classes = (IsAuthenticated,)
 
 	def get(self, request, *args, **kwargs):
 		user_id = self.kwargs["pk"]

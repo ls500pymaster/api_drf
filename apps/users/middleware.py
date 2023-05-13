@@ -7,7 +7,7 @@ class LastRequestMiddleware:
 		self.get_response = get_response
 
 	def __call__(self, request):
-		if request.user.is_authenticated:
+		if request.user:
 			UserActivity.objects.update_or_create(user=request.user, defaults={"last_request_time": timezone.now()})
 		response = self.get_response(request)
 		return response
