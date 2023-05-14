@@ -1,8 +1,12 @@
 from django.contrib import admin
-from .models import Post
+from .models import Post, PostLike
+
+
+class PostLikeInline(admin.TabularInline):
+    model = PostLike
+    extra = 1
 
 
 @admin.register(Post)
-class AdminPosts(admin.ModelAdmin):
-    list_display = ("user", "content", "created_at",)
-
+class PostAdmin(admin.ModelAdmin):
+    inlines = [PostLikeInline]

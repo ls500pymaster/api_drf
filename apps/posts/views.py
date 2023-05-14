@@ -1,31 +1,43 @@
 from django.db.models import Count
 from django.db.models.functions import TruncDay
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
-from apps.posts.models import Post
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from apps.posts.models import Post, PostLike
 from .serializers import PostSerializer
 
 
 class PostCreateView(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-class LikeUnlikePostView(generics.UpdateAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
+class LikeUnlikePostView(APIView):
 
-    def patch(self, request, *args, **kwargs):
-        post = self.get_object()
+    def post(self, request, *args, **kwargs):
+        post_id = self.kwargs.get("pk")
+        post = get_object_or_404(Post, id=post_id)
         user = request.user
-        print(user)
 
-        if user in post.liked_by.all():
-            post.liked_by.remove(user)
+        post_like = PostLike.objects.filter(user=user, post=post)
+
+        if post_like.exists():
+            post_like.delete()
         else:
-            post.liked_by.add(user)
+            PostLike.objects.create(user=user, post=post)
+            message = "Post Liked"
 
-        return Response(self.get_serializer(post).data, status=status.HTTP_200_OK)
+        post_serializer = PostSerializer(post)
+        return Response({
+            "message": message,
+            "post": post_serializer.data
+        }, status=status.HTTP_200_OK)
 
 
 class PostLikesAnalyticView(generics.ListAPIView):
@@ -42,7 +54,7 @@ class PostLikesAnalyticView(generics.ListAPIView):
         ).annotate(
             date=TruncDay("created_at")
         ).values("date").annotate(
-            likes_count=Count("liked_by")
+            likes_count=Count("likes")
         ).order_by("date")
 
         return Response(data=queryset)

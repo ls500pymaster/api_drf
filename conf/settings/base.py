@@ -52,9 +52,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'apps.users.middleware.LastRequestMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'apps.users.middleware.LastRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'conf.urls'
@@ -129,20 +129,18 @@ DEFAULT_FROM_EMAIL = env.str(
 
 # DRF SETTINGS
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
+    )
 }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=9999999),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=999),
-    "AUTH_HEADER_TYPES": ("Bearer",),
   }
 
 DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
 
-REST_FRAMEWORK = {'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'}
+# SWAGGER
+USE_SESSION_AUTH = False
+SHOW_REQUEST_HEADERS = True

@@ -107,7 +107,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class UserActivity(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     last_login = models.DateTimeField(auto_now=True)
     last_request_time = models.DateTimeField(auto_now=True)
 

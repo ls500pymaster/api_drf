@@ -1,10 +1,9 @@
-from rest_framework import serializers
-from .models import User
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.models import update_last_login
-from django.utils import timezone
+from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from .models import User
 from .models import UserActivity
-from django.contrib.auth.password_validation import validate_password
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -42,29 +41,49 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
 
-	def validate(self, attrs):
-		data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
 
-		user_serializer = UserSigninSerializer(self.user)
+        data['user'] = {
+            'id': self.user.id,
+            'email': self.user.email,
+            'first_name': self.user.first_name,
+            'last_name': self.user.last_name,
+            'default_language': self.user.default_language,
+            'gender': self.user.gender,
+            'age': self.user.age,
+        }
 
-		data.update(
-			{
-				"user": user_serializer.data,
-				"access_token": data.pop("access"),
-				"refresh": data.pop("refresh"),
-			}
-		)
-		return data
+        return data
 
-	@classmethod
-	def get_token(cls, user):
-		token = super().get_token(user)
-
-		# Update user's last login time
-		update_last_login(None, user)
-
-		return token
+# class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+#
+# 	def validate(self, attrs):
+# 		data = super().validate(attrs)
+#
+# 		user_serializer = UserSigninSerializer(self.user)
+#
+# 		data.update(
+# 			{
+# 				"user": user_serializer.data,
+# 				"access_token": data.pop("access"),
+# 				"refresh": data.pop("refresh"),
+# 			}
+# 		)
+# 		return data
+#
+# 	@classmethod
+# 	def get_token(cls, user):
+# 		token = super().get_token(user)
+#
+# 		# Update user's last login time
+# 		update_last_login(None, user)
+#
+# 		return token
 
 
 class UserActivitySerializer(serializers.ModelSerializer):
