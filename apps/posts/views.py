@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from apps.posts.models import Post, PostLike
 from .serializers import PostSerializer
+from django.utils import timezone
+from datetime import datetime
 
 
 class PostCreateView(generics.CreateAPIView):
@@ -48,6 +50,9 @@ class PostLikesAnalyticView(generics.ListAPIView):
 
         if not all([date_from, date_to]):
             return Response(data={"error": "Both parameters are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        date_from = timezone.make_aware(datetime.strptime(date_from, "%Y-%m-%d"))
+        date_to = timezone.make_aware(datetime.strptime(date_to, "%Y-%m-%d"))
 
         queryset = Post.objects.filter(
             created_at__range=[date_from, date_to]

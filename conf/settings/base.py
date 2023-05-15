@@ -1,8 +1,8 @@
 import os
-import dj_database_url
-from environs import Env
 from datetime import timedelta
 from pathlib import Path
+
+from environs import Env
 
 env = Env()
 env.read_env()
@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    # 'apps.users.middleware.LastRequestMiddleware',
+    'apps.users.middleware.LastRequestMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

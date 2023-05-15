@@ -1,13 +1,13 @@
-from django.shortcuts import render
-from .models import UserActivity
-from .serializers import UserActivitySerializer
 from django.contrib.auth import get_user_model
 from rest_framework import status, generics
-from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .models import UserActivity
+from .serializers import UserActivitySerializer
 from .serializers import UserSignupSerializer, UserSerializer, CustomTokenObtainPairSerializer
 
 User = get_user_model()
@@ -56,4 +56,4 @@ class LastRequestView(APIView):
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
+	serializer_class = CustomTokenObtainPairSerializer
