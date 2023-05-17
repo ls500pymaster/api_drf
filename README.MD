@@ -71,7 +71,3 @@ We also provide a Python script that uses the Faker library and asyncio to creat
 2. Install the required packages from `requirements.txt` using pip.
 3. Run the Django server.
 4. Use the provided Python script to populate the app with test data if needed.
-
-## Testing
-
-To run tests, navigate to the root directory of the project and run `python manage.py test`.
