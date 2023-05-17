@@ -75,7 +75,7 @@ class API:
             print(f"Post Created: {response}")
 
     async def fetch_posts(self, token):
-        url = f"{self.base_url}posts/posts/"
+        url = f"{self.base_url}posts/all/"
         headers = {"Authorization": f"Bearer {token}"}
         async with self.session.get(url, headers=headers) as response:
             if response.status == 200:

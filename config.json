@@ -1,6 +1,6 @@
 {
-  "users": 10,
-  "max_posts_per_user": 10,
-  "max_likes_per_user": 10,
+  "users": 7,
+  "max_posts_per_user": 8,
+  "max_likes_per_user": 9,
   "base_url": "http://127.0.0.1:8000/api/"
 }
