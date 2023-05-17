@@ -27,7 +27,7 @@ class CreateFixtures(BaseCommand):
 		max_likes_per_user = config["max_likes_per_user"]
 
 		users = [User(username=fake.name(), email=fake.email(), password=fake.password()) for _ in
-		         range(number_of_users)]
+				range(number_of_users)]
 		User.objects.bulk_create(users)
 
 		posts = []

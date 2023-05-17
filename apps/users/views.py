@@ -8,7 +8,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import UserActivity
 from .serializers import UserActivitySerializer
-from .serializers import UserSignupSerializer, UserSerializer, CustomTokenObtainPairSerializer
+from .serializers import (UserSignupSerializer,
+                          UserSerializer,
+                          CustomTokenObtainPairSerializer)
 
 User = get_user_model()
 
